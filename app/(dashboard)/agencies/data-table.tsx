@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/incompatible-library */
 "use client";
 
@@ -98,7 +99,7 @@ export function DataTable<TData, TValue>({
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
+                    onCheckedChange={(value: any) =>
                       column.toggleVisibility(!!value)
                     }
                   >
@@ -160,7 +161,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} className="mt-4" />
+      <DataTablePagination table={table} />
     </div>
   );
 }

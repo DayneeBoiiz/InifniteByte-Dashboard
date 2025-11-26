@@ -66,7 +66,6 @@ export const Navbar = memo(() => {
         <ModeToggle />
         <UISettings />
         <UserButton
-          afterSignOutUrl="/"
           appearance={{
             elements: {
               avatarBox: "w-8 h-8",

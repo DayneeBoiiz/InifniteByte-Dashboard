@@ -26,7 +26,7 @@ const UISettings = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="relative h-9 w-9 hover:bg-accent/50 transition-colors"
+          className="relative h-9 w-9 hover:bg-accent/50 transition-colors max-sm:hidden"
         >
           <Settings className="h-4 w-4" />
         </Button>

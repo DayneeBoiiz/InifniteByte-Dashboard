@@ -63,7 +63,7 @@ const QuickAccessCard = memo(
           {/* Card header content */}
           <CardHeader>
             <CardTitle>Quick Access</CardTitle>
-            <CardDescription style={{ color: "var(--muted-foreground)" }}>
+            <CardDescription className="text-muted-foreground">
               Navigate to key sections
             </CardDescription>
           </CardHeader>
@@ -86,10 +86,7 @@ const QuickAccessCard = memo(
                   {/* Text content */}
                   <div>
                     <div className="font-medium text-primary">{link.title}</div>
-                    <div
-                      className="text-sm"
-                      style={{ color: "var(--muted-foreground)" }}
-                    >
+                    <div className="text-sm text-muted-foreground max-sm:hidden">
                       {link.description}
                     </div>
                   </div>

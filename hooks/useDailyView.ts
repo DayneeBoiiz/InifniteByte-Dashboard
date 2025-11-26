@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useCallback, useEffect } from "react";
@@ -76,7 +77,7 @@ export function useDailyViews() {
         updateUserMetadata();
       }
     }
-  }, [setDailyViews, setWeekViews, updateUserMetadata, user]);
+  }, [user]);
 
   // Increment views and update both endpoints
   const incrementAndSync = async () => {

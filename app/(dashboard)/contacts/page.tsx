@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
@@ -86,12 +87,13 @@ export default function ContactsPage() {
   const loadInitialData = useCallback(async () => {
     // Improves performance by loading both in parallel
     await Promise.all([loadViewStatus(), loadContacts()]);
-  }, [loadViewStatus, loadContacts]);
+  }, []);
 
   // Run once when page loads
   useEffect(() => {
+    console.log("Hello");
     loadInitialData();
-  }, [loadInitialData]);
+  }, []);
 
   // -------- HANDLE CONTACT VIEW --------
   const handleViewContact = useCallback(

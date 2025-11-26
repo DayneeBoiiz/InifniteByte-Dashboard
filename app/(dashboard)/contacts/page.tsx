@@ -91,7 +91,6 @@ export default function ContactsPage() {
 
   // Run once when page loads
   useEffect(() => {
-    console.log("Hello");
     loadInitialData();
   }, []);
 

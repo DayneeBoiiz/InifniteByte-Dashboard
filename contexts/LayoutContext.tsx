@@ -9,7 +9,7 @@ import {
 } from "react";
 import axios from "axios";
 
-export type Collapsible = "offcanvas" | "icon" | "none";
+export type Collapsible = "offcanvas" | "icon" | "none" | "default";
 export type Variant = "inset" | "sidebar" | "floating";
 export type LayoutVariant = "default" | "compact" | "full";
 

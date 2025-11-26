@@ -3,6 +3,7 @@
 import { useCallback, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useDailyViewsStore } from "@/store/DailyViewsStore";
+import axios from "axios";
 
 export function useDailyViews() {
   const { user } = useUser();
@@ -22,18 +23,10 @@ export function useDailyViews() {
     if (!user) return;
 
     try {
-      const response = await fetch("/api/week-views", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const { data } = await axios.post("/api/week-views");
 
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          setWeekViews(result.weekViews);
-        }
+      if (data.success) {
+        setWeekViews(data.weekViews);
       }
     } catch (error) {
       console.error("Failed to update week views:", error);

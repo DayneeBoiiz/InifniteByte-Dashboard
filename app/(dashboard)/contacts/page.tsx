@@ -14,26 +14,40 @@ import { useDailyViews } from "@/hooks/useDailyView";
 import { Button } from "@/components/ui/button";
 
 const DAILY_LIMIT = 50;
+// Maximum number of contacts a user can view per day
 
 export default function ContactsPage() {
+  // Stores all contact records
   const [contacts, setContacts] = useState<Contact[]>([]);
+
+  // Loading state for contact data
   const [loading, setLoading] = useState(true);
+
+  // Loading state for view-tracking data
   const [loadingStatus, setLoadingStatus] = useState(true);
+
+  // Stores error message if something fails
   const [error, setError] = useState<string | null>(null);
+
+  // Tracks daily view usage and limits
   const [viewStatus, setViewStatus] = useState<ViewStatus>({
     dailyViews: 0,
     remainingViews: DAILY_LIMIT,
     hasExceededLimit: false,
     viewedContacts: [],
   });
+
+  // Hook used to update daily view count
   const { incrementDailyViews } = useDailyViews();
 
-  // Memoized load functions to prevent recreations on every render
+  // -------- LOAD VIEW LIMIT DATA --------
   const loadViewStatus = useCallback(async () => {
     setLoadingStatus(true);
     try {
       const { data } = await axios.get("/api/view-status");
       console.log("view-status", data);
+
+      // Store view limits and usage
       setViewStatus(data);
     } catch (err) {
       console.error("Error loading view status:", err);
@@ -42,17 +56,20 @@ export default function ContactsPage() {
     }
   }, []);
 
+  // -------- LOAD CONTACT DATA --------
   const loadContacts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
+
       const contactsData = await loadContactsCSVData();
 
-      // Validate data before setting state
+      // Ensure returned data is valid
       if (!Array.isArray(contactsData)) {
         throw new Error("Invalid data format");
       }
 
+      // Save contact data
       setContacts(contactsData);
     } catch (err) {
       setError("Failed to load contacts. Please try again.");
@@ -63,36 +80,45 @@ export default function ContactsPage() {
     }
   }, []);
 
+  // -------- LOAD BOTH DATA SOURCES AT ONCE --------
   const loadInitialData = useCallback(async () => {
-    // Load both in parallel for better performance
+    // Improves performance by loading both in parallel
     await Promise.all([loadViewStatus(), loadContacts()]);
   }, [loadViewStatus, loadContacts]);
 
+  // Run once when page loads
   useEffect(() => {
     loadInitialData();
   }, [loadInitialData]);
 
-  // Memoized handler to prevent recreation
+  // -------- HANDLE CONTACT VIEW --------
   const handleViewContact = useCallback(
     async (contactId: string) => {
+      // Block user if daily limit is reached
       if (viewStatus.hasExceededLimit) {
         toast.warning("Daily limit reached");
         return;
       }
 
+      // Prevent duplicate views
       if (viewStatus.viewedContacts.includes(contactId)) {
         toast.info("Contact already viewed");
         return;
       }
 
       try {
+        // Track view on the server
         const { data } = await axios.post("/api/track-view", { contactId });
+
+        // Update view tracking state
         setViewStatus(data);
 
+        // Update global daily view counter
         await incrementDailyViews();
 
         toast.success("Contact details revealed");
       } catch (err) {
+        // If limit reached on server
         if (axios.isAxiosError(err) && err.response?.status === 403) {
           setViewStatus(err.response.data);
           toast.error("Daily limit reached");
@@ -109,17 +135,19 @@ export default function ContactsPage() {
     ]
   );
 
-  // Memoize expensive calculations
+  // -------- PROGRESS BAR CALCULATION --------
   const progressPercentage = useMemo(
     () => (viewStatus.dailyViews / DAILY_LIMIT) * 100,
     [viewStatus.dailyViews]
   );
 
+  // -------- COMBINED LOADING STATE --------
   const isLoading = useMemo(
     () => loading || loadingStatus,
     [loading, loadingStatus]
   );
 
+  // -------- LOADING SCREEN --------
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -131,6 +159,7 @@ export default function ContactsPage() {
     );
   }
 
+  // -------- MAIN UI --------
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -143,7 +172,7 @@ export default function ContactsPage() {
         </div>
       </div>
 
-      {/* Usage Progress */}
+      {/* Usage Progress Bar */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Daily usage</span>
@@ -154,7 +183,7 @@ export default function ContactsPage() {
         <Progress value={progressPercentage} className="h-2" />
       </div>
 
-      {/* Alerts */}
+      {/* Error Alert */}
       {error && (
         <Alert
           variant="destructive"
@@ -165,6 +194,7 @@ export default function ContactsPage() {
         </Alert>
       )}
 
+      {/* Daily Limit Alert */}
       {viewStatus.hasExceededLimit && (
         <Alert className="border-l-4 border-l-amber-500 bg-amber-50">
           <AlertTriangle className="h-4 w-4 text-amber-600" />
@@ -179,7 +209,7 @@ export default function ContactsPage() {
         </Alert>
       )}
 
-      {/* Main Content */}
+      {/* Contacts Table */}
       <Card className="bg-transparent border-none">
         <CardContent className="p-0">
           <DataTable

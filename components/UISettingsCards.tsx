@@ -88,6 +88,7 @@ export function LayoutOptionCard({ label, value }: any) {
         onClick={() => {
           if (value === "default") {
             setOpen(true);
+            setCollapsible("default");
             return;
           }
           setOpen(false);

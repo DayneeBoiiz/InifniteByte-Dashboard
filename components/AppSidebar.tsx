@@ -1,4 +1,4 @@
-// components/AppSidebar.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { memo, useMemo } from "react";
@@ -50,7 +50,7 @@ export const AppSidebar = memo(() => {
 
   return (
     <Sidebar
-      collapsible={collapsible}
+      collapsible={collapsible as any}
       className="bg-background"
       variant={variant}
     >

@@ -15,36 +15,39 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 interface QuickAccessCardProps {
-  hasExceededLimit: boolean;
-  variants: any;
+  hasExceededLimit: boolean; // Controls access to restricted pages
+  variants: any; // Animation variants from parent
 }
 
+// Memoized to prevent unnecessary re-renders
 const QuickAccessCard = memo(
   ({ hasExceededLimit, variants }: QuickAccessCardProps) => {
+    // Next.js navigation hook
     const router = useRouter();
 
-    // Memoize quick links configuration
+    // Define quick navigation links
     const quickLinks = useMemo(
       () => [
         {
           href: "/agencies",
           title: "View All Agencies",
           description: "Browse complete agency list with cities",
-          enabled: true,
+          enabled: true, // Always accessible
         },
         {
           href: "/contacts",
           title: "Manage Contacts",
           description: "Access employee contact directory",
-          enabled: !hasExceededLimit,
+          enabled: !hasExceededLimit, // Disabled when daily limit is exceeded
         },
       ],
       [hasExceededLimit]
     );
 
-    // Memoize navigation handler
+    // Navigation handler with access control
     const handleNavigate = useCallback(
       (href: string, enabled: boolean) => {
+        // Only allow routing if the button is enabled
         if (enabled) {
           router.push(href);
         }
@@ -53,15 +56,21 @@ const QuickAccessCard = memo(
     );
 
     return (
+      // Animated container
       <motion.div variants={variants} initial="hidden" animate="visible">
+        {/* Card layout */}
         <Card className="border border-border bg-card text-card-foreground h-full">
+          {/* Card header content */}
           <CardHeader>
             <CardTitle>Quick Access</CardTitle>
             <CardDescription style={{ color: "var(--muted-foreground)" }}>
               Navigate to key sections
             </CardDescription>
           </CardHeader>
+
+          {/* Buttons for navigation */}
           <CardContent className="space-y-4">
+            {/* Render each navigation link */}
             {quickLinks.map((link) => (
               <div key={link.title}>
                 <Button
@@ -70,9 +79,11 @@ const QuickAccessCard = memo(
                       ? "border-border bg-card hover:bg-accent/50 cursor-pointer"
                       : "border-muted bg-muted/50 text-muted-foreground cursor-not-allowed"
                   }`}
+                  // Only navigates if enabled
                   onClick={() => handleNavigate(link.href, link.enabled)}
                   disabled={!link.enabled}
                 >
+                  {/* Text content */}
                   <div>
                     <div className="font-medium text-primary">{link.title}</div>
                     <div
@@ -82,6 +93,8 @@ const QuickAccessCard = memo(
                       {link.description}
                     </div>
                   </div>
+
+                  {/* Right arrow icon */}
                   <div>
                     <ArrowRight
                       className="h-4 w-4"
@@ -98,6 +111,7 @@ const QuickAccessCard = memo(
   }
 );
 
+// Helps React DevTools identify the component
 QuickAccessCard.displayName = "QuickAccessCard";
 
 export default QuickAccessCard;

@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InfiniteByte Dashboard
 
-## Getting Started
+A full-stack dashboard application built as part of a technical assignment.
 
-First, run the development server:
+This project implements **user authentication**, **daily usage limits**, and **data visualization** for agencies and contacts — built with **Next.js 16**, **Clerk**, **PostgreSQL**, **Prisma**, and deployed on **Vercel**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🔐 Authentication (Clerk)
+- Secure login and session management using Clerk.
+- Middleware-protected routes (`/dashboard`, `/agency`, `/contacts`).
+- Custom sign-in and sign-up pages.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🗂 Agencies Dashboard
+- Fetches all agencies from the database.
+- Displays them in a fully responsive table with sorting and filtering.
 
-## Learn More
+### 👥 Contacts Dashboard
+- Displays employee/contact data linked to each agency.
+- Users are **limited to 50 contacts per day**.
+- If limit is exceeded → user sees an **upgrade prompt** (no payment required).
 
-To learn more about Next.js, take a look at the following resources:
+### 📊 UI Components
+- Built using **shadcn/ui**, TailwindCSS, and custom components.
+- Dark mode support.
+- Loading indicators, top progress bar, and smooth navigation.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🌐 Deployment
+- Fully deployed on **Vercel**.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+See [System Architecture](docs/ARCHITECTURE.md) for detailed flow diagrams.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🧩 Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js 16 (App Router), React 19 |
+| Styling | TailwindCSS, shadcn/ui |
+| Authentication | Clerk |
+| Deployment | Vercel |
+
+---

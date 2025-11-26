@@ -10,32 +10,36 @@ import QuickAccessCard from "@/components/dashboard/QuickAccessCard";
 import StatsGrid from "@/components/dashboard/StatsGrid";
 import UpgradePrompt from "@/components/dashboard/UpgradePrompt";
 
-// Animation variants
+// Animation configuration for the main container
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.1, // Adds delay between animations of child components
     },
   },
 };
 
+// Animation configuration for each child component
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 20 }, // Start slightly below and invisible
   visible: {
     opacity: 1,
-    y: 0,
+    y: 0, // Move into place
   },
 };
 
 export default function DashboardPage() {
+  // Get user view statistics from custom hook
   const { dailyViews, weekViews, hasExceededLimit } = useDailyViews();
 
-  // Memoize processed data
+  // Prepare and validate data only when dependencies change
   const processedData = useMemo(() => {
+    // Ensure weekly data is always an array
     const safeWeekViews = Array.isArray(weekViews) ? weekViews : [];
 
+    // Return cleaned and safe object
     return {
       dailyViews,
       hasExceededLimit,
@@ -50,20 +54,20 @@ export default function DashboardPage() {
       animate="visible"
       variants={containerVariants}
     >
-      {/* Header */}
+      {/* Dashboard header section */}
       <DashboardHeader variants={itemVariants} />
 
-      {/* Stats Grid */}
+      {/* Statistics display cards */}
       <StatsGrid
         dailyViews={processedData.dailyViews}
         hasExceededLimit={processedData.hasExceededLimit}
         variants={itemVariants}
       />
 
-      {/* Upgrade Prompt */}
+      {/* Display upgrade message when limit is exceeded */}
       {processedData.hasExceededLimit && <UpgradePrompt />}
 
-      {/* Quick Actions */}
+      {/* Action and analytics section */}
       <div className="grid gap-6 md:grid-cols-2">
         <QuickAccessCard
           hasExceededLimit={processedData.hasExceededLimit}

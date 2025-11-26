@@ -7,15 +7,19 @@ import { loadAgenciesCSVData, loadContactsCSVData } from "@/lib/data-loader";
 
 const StatsGrid = memo(
   ({ dailyViews, hasExceededLimit, variants }: StatsGridProps) => {
+    // Store total agency count
     const [totalAgencies, setTotalAgencies] = useState<number | null>(null);
+
+    // Store total contact count
     const [totalContacts, setTotalContacts] = useState<number | null>(null);
 
+    // Load agency and contact counts when component mounts
     useEffect(() => {
       loadAgenciesCSVData().then((data) => setTotalAgencies(data.length));
       loadContactsCSVData().then((data) => setTotalContacts(data.length));
     }, []);
 
-    // Memoize stats configuration
+    // Prepare statistics data only when dependencies change
     const stats = useMemo(
       () => [
         {
@@ -49,11 +53,14 @@ const StatsGrid = memo(
           color: "var(--chart-4)",
         },
       ],
+
+      // Dependencies that trigger recomputation
       [dailyViews, hasExceededLimit, totalAgencies, totalContacts]
     );
 
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Render each statistic as a StatCard component */}
         {stats.map((stat, index) => (
           <StatCard
             key={stat.title}
@@ -68,6 +75,7 @@ const StatsGrid = memo(
   }
 );
 
+// Set display name for easier debugging
 StatsGrid.displayName = "StatsGrid";
 
 export default StatsGrid;

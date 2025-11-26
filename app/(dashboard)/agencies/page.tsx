@@ -11,66 +11,81 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
 const Agencies = () => {
+  // Stores agency data
   const [agencies, setAgencies] = useState<Agency[]>([]);
+
+  // Tracks whether data is still being fetched
   const [loading, setLoading] = useState(true);
+
+  // Holds any error message from loading
   const [error, setError] = useState<string | null>(null);
+
+  // Counts how many times reload has been attempted
   const [retryCount, setRetryCount] = useState(0);
 
-  // Memoized load function to prevent unnecessary recreations
+  // Loads agencies from CSV and updates state
   const loadAgencies = useCallback(async () => {
     try {
-      setLoading(true);
-      setError(null);
+      setLoading(true); // Show loading UI
+      setError(null); // Clear previous error
 
       const agenciesData = await loadAgenciesCSVData();
 
-      // Validate data
+      // Check if valid array was returned
       if (!Array.isArray(agenciesData)) {
         throw new Error("Invalid data format received");
       }
 
+      // Save loaded data into state
       setAgencies(agenciesData);
 
-      // Success feedback
+      // Show success message only after retry
       if (retryCount > 0) {
         toast.success(
           `Agencies loaded successfully (${agenciesData.length} records)`
         );
       }
 
+      // Reset retry count after success
       setRetryCount(0);
     } catch (err) {
+      // If error occurred, determine error message
       const errorMessage =
         err instanceof Error
           ? err.message
           : "Failed to load agencies. Please try again.";
 
       setError(errorMessage);
+
+      // Display error toast notification
       toast.error("Failed to load agencies", {
         description: errorMessage,
       });
 
+      // Log error for debugging
       console.error("Error loading agencies:", err);
     } finally {
+      // Stop showing loader once done
       setLoading(false);
     }
   }, [retryCount]);
 
+  // Run once when component loads
   useEffect(() => {
     loadAgencies();
   }, [loadAgencies]);
 
-  // Retry handler
+  // Retry loading when user clicks button
   const handleRetry = () => {
     setRetryCount((prev) => prev + 1);
     loadAgencies();
   };
 
-  // Loading state with skeleton
+  // --------- LOADING SCREEN ---------
   if (loading) {
     return (
       <div className="space-y-4">
-        {/* Header skeleton */}
+        {/* Skeleton UI shown during loading */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-2">
             <div className="h-8 w-32 bg-muted animate-pulse rounded" />
@@ -78,9 +93,9 @@ const Agencies = () => {
           </div>
         </div>
 
-        {/* Content skeleton */}
         <Card className="bg-transparent border-none">
           <CardContent className="p-0">
+            {/* Fake rows for loading effect */}
             <div className="space-y-3">
               <div className="h-10 bg-muted animate-pulse rounded" />
               {[...Array(5)].map((_, i) => (
@@ -93,7 +108,7 @@ const Agencies = () => {
           </CardContent>
         </Card>
 
-        {/* Loading indicator */}
+        {/* Animated spinner */}
         <div className="flex items-center justify-center py-8">
           <div className="flex items-center gap-3 text-muted-foreground">
             <Loader2 className="h-5 w-5 animate-spin" />
@@ -104,19 +119,17 @@ const Agencies = () => {
     );
   }
 
-  // Error state
+  // --------- ERROR SCREEN ---------
   if (error) {
     return (
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Agencies</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              List of Agencies
-            </p>
-          </div>
+        {/* Page title */}
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Agencies</h1>
+          <p className="text-sm text-muted-foreground mt-1">List of Agencies</p>
         </div>
 
+        {/* Error alert display */}
         <Alert variant="destructive" className="border-destructive/50">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
@@ -124,6 +137,8 @@ const Agencies = () => {
               <p className="font-medium">Failed to load agencies</p>
               <p className="text-sm mt-1 opacity-90">{error}</p>
             </div>
+
+            {/* Retry button */}
             <Button
               variant="outline"
               size="sm"
@@ -136,7 +151,7 @@ const Agencies = () => {
           </AlertDescription>
         </Alert>
 
-        {/* Show empty state card */}
+        {/* UI if data cannot be shown */}
         <Card className="bg-transparent border-none">
           <CardContent className="p-12 text-center">
             <div className="flex flex-col items-center gap-2 text-muted-foreground">
@@ -150,29 +165,27 @@ const Agencies = () => {
     );
   }
 
-  // Empty state
+  // --------- EMPTY STATE ---------
   if (agencies.length === 0) {
     return (
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Agencies</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              List of Agencies
-            </p>
-          </div>
-          <Button variant="outline" size="sm" onClick={handleRetry}>
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
+        {/* Header */}
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Agencies</h1>
+          <p className="text-sm text-muted-foreground mt-1">List of Agencies</p>
         </div>
 
+        {/* Reload button when list is empty */}
+        <Button variant="outline" size="sm" onClick={handleRetry}>
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Refresh
+        </Button>
+
+        {/* Empty screen design */}
         <Card className="bg-transparent border-none">
           <CardContent className="p-12 text-center">
             <div className="flex flex-col items-center gap-2 text-muted-foreground">
-              <div className="h-12 w-12 mb-2 rounded-full bg-muted flex items-center justify-center">
-                <AlertCircle className="h-6 w-6" />
-              </div>
+              <AlertCircle className="h-6 w-6" />
               <p className="text-lg font-medium">No agencies found</p>
               <p className="text-sm">
                 There are currently no agencies to display
@@ -184,9 +197,10 @@ const Agencies = () => {
     );
   }
 
-  // Success state with data
+  // --------- SUCCESS STATE ---------
   return (
     <div className="space-y-4">
+      {/* Page header and agency count */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Agencies</h1>
@@ -194,6 +208,8 @@ const Agencies = () => {
             {agencies.length} {agencies.length === 1 ? "agency" : "agencies"}
           </p>
         </div>
+
+        {/* Reload button */}
         <Button
           variant="outline"
           size="sm"
@@ -207,6 +223,7 @@ const Agencies = () => {
         </Button>
       </div>
 
+      {/* Table of agencies */}
       <Card className="bg-transparent border-none">
         <CardContent className="p-0">
           <DataTable columns={columns} data={agencies} />
@@ -217,3 +234,4 @@ const Agencies = () => {
 };
 
 export default Agencies;
+// Makes this component usable elsewhere

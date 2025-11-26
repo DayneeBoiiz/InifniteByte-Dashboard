@@ -87,7 +87,7 @@ export async function POST(req: Request) {
       viewedContacts,
     });
   } catch (error) {
-    console.error("Error tracking view:", error);
+    void error;
     return NextResponse.json(
       { error: "Failed to track view" },
       { status: 500 }

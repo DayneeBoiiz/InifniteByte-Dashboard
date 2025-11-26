@@ -45,7 +45,6 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === "user.created") {
-    console.log("User Created and webhook called");
     const { id } = evt.data;
 
     // Generate initial week views data with zeros for all days
@@ -69,8 +68,6 @@ export async function POST(req: Request) {
           internalId: `user_${Date.now()}`,
         },
       });
-
-      console.log(`✅ Metadata added for user: ${id}`);
     } catch (error) {
       console.error("Error updating user metadata:", error);
       return new Response("Error updating user", { status: 500 });

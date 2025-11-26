@@ -62,7 +62,7 @@ export async function POST() {
       weekViews,
     });
   } catch (error) {
-    console.error("Error updating week views:", error);
+    void error;
     return NextResponse.json(
       { error: "Failed to update week views" },
       { status: 500 }

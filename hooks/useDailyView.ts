@@ -29,7 +29,7 @@ export function useDailyViews() {
         setWeekViews(data.weekViews);
       }
     } catch (error) {
-      console.error("Failed to update week views:", error);
+      void error;
     }
   }, [user, setWeekViews]);
 
@@ -47,7 +47,7 @@ export function useDailyViews() {
         },
       });
     } catch (error) {
-      console.error("Failed to update user metadata:", error);
+      void error;
     }
   }, [user, dailyViews, lastResetDate, weekViews]);
 

@@ -63,7 +63,7 @@ const Agencies = () => {
       });
 
       // Log error for debugging
-      console.error("Error loading agencies:", err);
+      // console.error("Error loading agencies:", err);
     } finally {
       // Stop showing loader once done
       setLoading(false);

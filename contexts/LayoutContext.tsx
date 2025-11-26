@@ -67,7 +67,7 @@ const LayoutProvider = ({ children }: LayoutProviderProps) => {
       if (typeof data.sidebarOpen === "boolean")
         setSidebarOpenState(data.sidebarOpen);
     } catch (error) {
-      console.error("Error loading layout settings:", error);
+      void error;
     } finally {
       setIsLoadingSettings(false);
     }
@@ -81,7 +81,7 @@ const LayoutProvider = ({ children }: LayoutProviderProps) => {
     try {
       await axios.post("/api/layout-settings", settings);
     } catch (error) {
-      console.error("Error saving layout settings:", error);
+      void error;
     }
   };
 

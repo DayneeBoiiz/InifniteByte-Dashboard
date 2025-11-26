@@ -46,7 +46,7 @@ export async function GET() {
       viewedContacts,
     });
   } catch (error) {
-    console.error("Error getting view status:", error);
+    void error;
     return NextResponse.json(
       { error: "Failed to get view status" },
       { status: 500 }

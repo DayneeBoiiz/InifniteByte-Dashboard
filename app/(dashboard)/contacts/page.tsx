@@ -45,12 +45,13 @@ export default function ContactsPage() {
     setLoadingStatus(true);
     try {
       const { data } = await axios.get("/api/view-status");
-      console.log("view-status", data);
 
       // Store view limits and usage
       setViewStatus(data);
     } catch (err) {
-      console.error("Error loading view status:", err);
+      void err;
+      toast.error("Failed to load view status");
+      // console.error("Error loading view status:", err);
     } finally {
       setLoadingStatus(false);
     }
@@ -73,7 +74,8 @@ export default function ContactsPage() {
       setContacts(contactsData);
     } catch (err) {
       setError("Failed to load contacts. Please try again.");
-      console.error("Error loading contacts:", err);
+      void err;
+      // console.error("Error loading contacts:", err);
       toast.error("Failed to load contacts");
     } finally {
       setLoading(false);
@@ -123,7 +125,7 @@ export default function ContactsPage() {
           setViewStatus(err.response.data);
           toast.error("Daily limit reached");
         } else {
-          console.error("Error tracking view:", err);
+          void err;
           toast.error("Failed to view contact");
         }
       }

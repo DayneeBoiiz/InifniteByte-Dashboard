@@ -30,7 +30,7 @@ export async function GET() {
 
     return NextResponse.json(layoutSettings);
   } catch (error) {
-    console.error("Error fetching layout settings:", error);
+    void error;
     return NextResponse.json(
       { error: "Failed to fetch layout settings" },
       { status: 500 }
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
       layoutSettings: updatedLayoutSettings,
     });
   } catch (error) {
-    console.error("Error updating layout settings:", error);
+    void error;
     return NextResponse.json(
       { error: "Failed to update layout settings" },
       { status: 500 }

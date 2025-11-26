@@ -37,7 +37,7 @@ export async function loadContactsCSVData(): Promise<Contact[]> {
       });
     });
   } catch (error) {
-    console.error("Error loading CSV data:", error);
+    void error;
     throw error;
   }
 }
@@ -86,7 +86,7 @@ export async function loadAgenciesCSVData(): Promise<Agency[]> {
       });
     });
   } catch (error) {
-    console.error("Error loading agencies CSV data:", error);
+    void error;
     throw error;
   }
 }
